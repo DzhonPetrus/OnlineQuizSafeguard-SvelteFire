@@ -4,10 +4,13 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public"
+    "start": "sirv public --single"
   },
   "devDependencies": {
+    "autoprefixer": "^10.2.4",
     "firebase": "^7.5.2",
+    "postcss": "^8.2.7",
+    "postcss-load-config": "^3.0.1",
     "rollup": "^1.27.9",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-livereload": "^1.0.0",
@@ -16,6 +19,14 @@
     "rollup-plugin-terser": "^5.1.2",
     "sirv-cli": "^0.4.4",
     "svelte": "^3.16.3",
-    "sveltefire": "^0.1.1"
+    "svelte-preprocess": "^4.6.9",
+    "sveltefire": "^0.1.1",
+    "tailwindcss": "^2.0.3"
+  },
+  "dependencies": {
+    "@beyonk/svelte-notifications": "^3.1.0",
+    "@sveltech/routify": "^1.1.1-1",
+    "@svelteschool/svelte-forms": "^0.7.0",
+    "svelte-loading-spinners": "^0.1.4"
   }
 }

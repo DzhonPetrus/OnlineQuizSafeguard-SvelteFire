@@ -1,4 +1,8 @@
 <script>
+  import {  NotificationDisplay } from '@beyonk/svelte-notifications';
+  import Login from './components/Login.svelte';
+  import Dashboard from './components/Dashboard.svelte';
+
   import { FirebaseApp, User, Doc, Collection } from "sveltefire";
 
   import firebase from "firebase/app";
@@ -9,136 +13,36 @@
 
   let firebaseConfig = {
   // Insert Firebase Credentials here
+  apiKey: "AIzaSyBfZsaPhvytstCy1RLR5qDvSJqgzVWIqMk",
+  authDomain: "online-quiz-safeguard.firebaseapp.com",
+  projectId: "online-quiz-safeguard",
+  storageBucket: "online-quiz-safeguard.appspot.com",
+  messagingSenderId: "9646730740",
+  appId: "1:9646730740:web:f09c386a11321847481da1",
+  measurementId: "G-5TW7SDMNDW"
   };
 
   firebase.initializeApp(firebaseConfig);
 </script>
 
-<main>
+<NotificationDisplay />
 
-  {#if !firebaseConfig.projectId}
-    <strong>Step 0</strong>
-    Create a
-    <a href="https://firebase.google.com/">Firebase Project</a>
-    and paste your web config into
-    <code>App.svelte</code>
-    .
-  {/if}
+<main class="bg-gray-100 dark:bg-gray-800 relative h-screen overflow-hidden relative">
+<FirebaseApp {firebase}>
+  <User persist={sessionStorage} let:user let:auth>
+    <div slot="signed-out">
+      <Login {auth}/>
+    </div>
 
-  <!-- 1. 🔥 Firebase App -->
-  <FirebaseApp {firebase}>
+    <Dashboard {user} {auth} />
 
-    <h1>💪🔥 Mode Activated</h1>
-
-    <p>
-      <strong>Tip:</strong>
-      Open the browser console for development logging.
-    </p>
-
-
-    <!-- 2. 😀 Get the current user -->
-    <User let:user let:auth>
-      Howdy 😀! User
-      <em>{user.uid}</em>
-
-      <button on:click={() => auth.signOut()}>Sign Out</button>
-
-      <div slot="signed-out">
-
-        <button on:click={() => auth.signInAnonymously()}>
-          Sign In Anonymously
-        </button>
-      </div>
-
-      <hr />
-
-      <!-- 3. 📜 Get a Firestore document owned by a user -->
-      <Doc path={`posts/${user.uid}`} let:data={post} let:ref={postRef} log>
-
-        <h2>{post.title}</h2>
-
-        <p>
-          Document
-          created at <em>{new Date(post.createdAt).toLocaleString()}</em>
-        </p>
-
-        <span slot="loading">Loading post...</span>
-        <span slot="fallback">
-          <button
-            on:click={() => postRef.set({
-                title: '📜 I like Svelte',
-                createdAt: Date.now()
-              })}>
-            Create Document
-          </button>
-        </span>
-
-        <!-- 4. 💬 Get all the comments in its subcollection -->
-
-        <h3>Comments</h3>
-        <Collection
-          path={postRef.collection('comments')}
-          query={ref => ref.orderBy('createdAt')}
-          let:data={comments}
-          let:ref={commentsRef}
-          log>
-
-          {#if !comments.length}
-              No comments yet...
-          {/if}
-
-          {#each comments as comment}
-            <p>
-              <!-- ID: <em>{comment.ref.id}</em> -->
-            </p>
-            <p>
-              {comment.text}
-              <button on:click={() => comment.ref.delete()}>Delete</button>
-            </p>
-          {/each}
-
-
-          <button
-            on:click={() => commentsRef.add({
-                text: '💬 Me too!',
-                createdAt: Date.now()
-              })}>
-            Add Comment
-          </button>
-
-          <span slot="loading">Loading comments...</span>
-
-        </Collection>
-      </Doc>
-    </User>
-  </FirebaseApp>
-
+  </User>
+</FirebaseApp>
 </main>
 
 
-<!-- Styles -->
-<style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
-  h1,
-  em {
-    color: #ff3e00;
-  }
-
-  hr {
-    height: 1px;
-    border: none;
-    background: rgb(195, 195, 195);
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
+<style global>
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
 </style>
