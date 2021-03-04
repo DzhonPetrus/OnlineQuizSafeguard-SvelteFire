@@ -12,5 +12,4 @@
     $:console.log($currentUser);
 </script>
 
-DASHBOARD
 <Nav { user } { auth } />

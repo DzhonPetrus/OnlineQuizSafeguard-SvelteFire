@@ -1,44 +1,74 @@
 <script>
     import ToggleDarkMode from './ToggleDarkMode.svelte';
-    import { notifier } from '@beyonk/svelte-notifications';
-    import Form from '@svelteschool/svelte-forms';
+    import SignUp from './SignUp.svelte';
 
     import firebase from 'firebase/app';
     const db = firebase.firestore();
 
+    import { notifier } from '@beyonk/svelte-notifications';
+    import Form from '@svelteschool/svelte-forms';
+    let values;
+
     export let auth;
 
+    let formState = 'LOGIN';
+
     function signIn(){
-        auth.signInWithEmailAndPassword(email, password).catch(error => console.log(error.code, error.message));
+        let {email,password} = values;
+        // TODO VALIDATE DATA
+            /* password 6 characters minimum */
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => notifier.success('User Signed In successfully'))
+                .catch(error => console.log(error.code, error.message));
     }
 
     function signInGoogle(){
         auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
             .then(result => {
-                    const {email, photoURL, displayName} = result.user;
-                     db.collection("userProfile").doc(email).get().then(doc => {
+                    notifier.success('User Signed In successfully');
+
+                    /* GENERATE USER PROFILE IF USER DOESN'T HAVE USER PROFILE */
+                    const {email, photoURL, displayName, metadata, uid} = result.user;
+                    const newUserProfile = {email, photoURL, fullName:displayName, createdAt:metadata.creationTime, uid, bio:'', website:'', location:''};
+                     db.collection("userProfiles").doc(email).get().then(doc => {
                     if(!doc.exists)
-                        db.collection("userProfile").doc(email).set({email, photoURL, fullName:displayName}).then(() => console.log('userProfile created!')).catch(error => console.log(error.code, error.message));
+                        db.collection("userProfiles").doc(email).set(newUserProfile).then(() => notifier.success('User Profile created successfully')).catch(error => console.log(error.code, error.message));
                     });
-            });
+            })
+            .catch(error => console.error(error.code, error.message));
     }
 
-    function signUp(){
-            db.collection("userProfile").doc(email).set({email}).then(() => console.log('userProfile created!')).catch(error => console.log(error.code, error.message));
-        auth.createUserWithEmailAndPassword(email, password).catch(error => console.log(error.code, error.message));
+    function signUp(credential){
+            let {email, password} = credential.detail;
 
+            /* USER SIGN UP */
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((credentials) => {
+                        let { email, uid, metadata } = credentials.user;
+                    const newUserProfile = {email, photoURL: 'https://iupac.org/wp-content/uploads/2018/05/default-avatar.png', fullName:'', createdAt:metadata.creationTime, uid, bio:'', website:'', location:''};
+                    notifier.success('Account created successfully')
+
+                    /* GENERATING USER PROFILE */
+                    db.collection("userProfiles").doc(email).set(newUserProfile)
+                        .then(() => notifier.success('User Profile created successfully'))
+                        .catch(error => console.error(error.code, error.message));
+                })
+                .catch(error => console.error(error.code, error.message));
     }
 </script>
 
 <ToggleDarkMode />
 
+{#if formState==='LOGIN'}
+
 <div class="flex items-center justify-center w-full mb-12 mt-4">
     <div class="flex flex-col w-full max-w-md px-4 py-8 bg-white rounded-lg shadow dark:bg-gray-600 sm:px-6 md:px-8 lg:px-10">
         <div class="self-center mb-6 text-xl font-light text-gray-600 sm:text-2xl dark:text-white">
-            Login To Your Account
+            Sign In To Your Account
         </div>
-        <div class="mt-8">
 
+        <div>
             <a href="#" class="flex items-center justify-center mt-4 text-gray-600 rounded-lg shadow-md dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
                 <div class="px-4 py-3">
                     <svg class="w-6 h-6" viewBox="0 0 40 40">
@@ -51,26 +81,25 @@
 
                 <span on:click={signInGoogle} class="w-5/6 px-4 py-3 font-bold text-center">Sign in with Google</span>
             </a>
-            <br> <br>
+            <br>
+
+            <Form bind:values>
 
                 <div class="flex flex-col mb-2">
                     <div class="flex relative ">
                         <span class="rounded-l-md inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 shadow-sm text-sm">
-                            <svg width="15" height="15" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            <svg width="15" height="15" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd" />
                             </svg>
                         </span>
-                        <input required name="username" type="text" class=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Your username"/>
+                        <input required name="email" type="email" class=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Your email"/>
                         </div>
                     </div>
                     <div class="flex flex-col mb-6">
                         <div class="flex relative ">
                             <span class="rounded-l-md inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 shadow-sm text-sm">
-                                <svg width="15" height="15" fill="currentColor" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <svg width="15" height="15" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z" />
-                                    </svg>
                                 </svg>
                             </span>
                             <input required name="password" type="password" class=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Your password"/>
@@ -80,15 +109,16 @@
 
                         </div>
                         <div class="flex w-full">
-                            <button  class="py-2 px-4  bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 focus:ring-offset-purple-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
-                                Login
+                            <button on:click|preventDefault={signIn} class="py-2 px-4  bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 focus:ring-offset-purple-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+                                Sign In
                             </button>
                         </div>
+            </Form>
 
 
                 </div>
                 <div class="cursor-pointer flex items-center justify-center mt-6">
-                    <a   class="inline-flex items-center text-xs font-thin text-center text-gray-500 hover:text-gray-700 dark:text-gray-100 dark:hover:text-white">
+                    <a on:click={() => formState = 'REGISTER'} class="cursor-pointer inline-flex items-center text-xs font-thin text-center text-gray-500 hover:text-gray-700 dark:text-gray-100 dark:hover:text-white">
                         <span class="ml-2">
                             You don&#x27;t have an account?
                         </span>
@@ -96,3 +126,9 @@
                 </div>
             </div>
     </div>
+{:else}
+    <SignUp on:signUpGoogle={signInGoogle} on:signUp={signUp} on:changeState={() => formState='LOGIN'}/>
+{/if}
+
+
+<pre>{JSON.stringify(values, undefined, 1)}</pre>
