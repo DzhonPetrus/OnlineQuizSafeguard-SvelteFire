@@ -9,7 +9,6 @@
   export let user;
 
     $:currentUser.set(user);
-    $:console.log(user);
     $:console.log($currentUser);
 </script>
 
