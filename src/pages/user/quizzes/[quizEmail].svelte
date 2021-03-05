@@ -5,6 +5,7 @@
     const { serverTimestamp } = firebase.firestore.FieldValue;
   import { Doc, Collection } from "sveltefire";
   import { currentUser, currentUserProfile } from '../../../util/store.js';
+  import QUIZ_FORM from '../../../components/QUIZ_FORM.svelte';
 
   import { Stretch } from "svelte-loading-spinners";
 
@@ -13,10 +14,15 @@
     export let quizEmail;
    let quizzesQuery = ref => ref.where('email','==',quizEmail).orderBy('createdAt', 'desc').limit(10);
 
+    let quizFormState;
+        $:console.log(quizFormState)
 </script>
 
-
 <div class="w-full bg-white p-12 mt-16 shadow-2xl rounded my-24 ">
+{#if quizFormState === 'ADD'}
+    <QUIZ_FORM />
+{:else}
+
     <div class="header flex items-end justify-between mb-12">
         <div class="title">
             <p class="text-4xl font-bold text-gray-800 mb-4">
@@ -27,7 +33,8 @@
             </p>
         </div>
         <div class="text-end">
-            <form class="flex w-full max-w-sm space-x-3">
+
+            <div class="flex w-full max-w-sm space-x-3">
                 <div class=" relative ">
 
                     <input type="text" class=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Enter a title"/>
@@ -36,10 +43,11 @@
                         Search
                     </button>
 
-                    <button class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200">
+                    <button on:click={() => quizFormState = 'ADD'} class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200">
                         Create Quiz
                     </button>
-                </form>
+                </div>
+
             </div>
         </div>
 
@@ -107,5 +115,6 @@
 
 
 </Collection>
-    </div>
 
+{/if}
+</div>

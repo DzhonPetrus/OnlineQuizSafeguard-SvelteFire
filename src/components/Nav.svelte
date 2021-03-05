@@ -24,7 +24,7 @@
             [`./user/quizzes/${user.email}`, 'My Quizzes'],
         ];
 </script>
-<Doc path={`userProfiles/${user.email}`} on:data={e => currentUserProfile.set(e.detail.data)} />
+<Doc path={`userProfiles/${user.email}`} let:data={userProfile} on:data={e => currentUserProfile.set(e.detail.data)} >
 
 <div>
     <nav class="z-50 bg-white dark:bg-gray-600  shadow ">
@@ -53,7 +53,7 @@
                             <div class="relative inline-block text-left">
                                 <div>
                                     <button on:click={() => hideUserDropdown = !hideUserDropdown} type="button" class="  flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500" id="options-menu">
-                                        <img class="h-8 w-8 rounded-full" src={checkEmptyArray($currentUserProfile, $currentUserProfile.photoURL)} alt="Avatar">
+                                        <img class="h-8 w-8 rounded-full" src={userProfile.photoURL} alt="Avatar">
                                     </button>
                                 </div>
                                 <div hidden={hideUserDropdown} class="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
@@ -101,3 +101,4 @@
         </div>
     </nav>
 </div>
+</Doc>
