@@ -1,7 +1,5 @@
 <script>
-  import dayjs from 'dayjs';
-  import relativeTime from 'dayjs/plugin/relativeTime';
-  dayjs.extend(relativeTime);
+  import {humanizedFBDateTime} from '../../util/helper.js';
 
   import { params } from '@sveltech/routify';
   export let quizId;
@@ -49,7 +47,7 @@
 
 
                             <div class='text-gray-400 font-thin text-xs'>
-                              {dayjs().to(quiz.createdAt)}
+                              {humanizedFBDateTime(quiz.createdAt)}
                             </div>
 
                         </div>

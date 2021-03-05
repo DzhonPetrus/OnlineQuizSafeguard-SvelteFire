@@ -1,7 +1,8 @@
 <script>
+    import { humanizedFBDateTime } from '../../util/helper.js';
     import firebase from "firebase/app";
     const db = firebase.firestore();
-    const { serverTimestamp } = firebase.firestore.FieldValue;
+
   import { Doc, Collection } from "sveltefire";
   import { currentUser } from '../../util/store.js';
 
@@ -78,7 +79,7 @@
                                     {userProfile.fullName}
                                 </p>
                                 <p class="text-gray-400 dark:text-gray-300">
-                                    {quiz.createdAt}
+                                    {humanizedFBDateTime(quiz.createdAt)}
                                 </p>
                             </div>
                         </div>

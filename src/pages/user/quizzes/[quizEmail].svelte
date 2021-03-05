@@ -1,8 +1,8 @@
 <script>
+    import { humanizedFBDateTime } from '../../../util/helper.js';
 
     import firebase from "firebase/app";
     const db = firebase.firestore();
-    const { serverTimestamp } = firebase.firestore.FieldValue;
   import { Doc, Collection } from "sveltefire";
   import { currentUser, currentUserProfile } from '../../../util/store.js';
   import QUIZ_FORM from '../../../components/QUIZ_FORM.svelte';
@@ -14,13 +14,20 @@
     export let quizEmail;
    let quizzesQuery = ref => ref.where('email','==',quizEmail).orderBy('createdAt', 'desc').limit(10);
 
-    let quizFormState;
-        $:console.log(quizFormState)
+    let myQuizzesState;
+    let selectedQuiz;
+
+      const handleMyQuiz = (quiz) => {
+              selectedQuiz = quiz;
+              myQuizzesState = 'EDIT';
+          };
 </script>
 
 <div class="w-full bg-white p-12 mt-16 shadow-2xl rounded my-24 ">
-{#if quizFormState === 'ADD'}
+{#if myQuizzesState === 'ADD'}
     <QUIZ_FORM />
+{:else if myQuizzesState === 'EDIT'}
+    <QUIZ_FORM {selectedQuiz}/>
 {:else}
 
     <div class="header flex items-end justify-between mb-12">
@@ -43,7 +50,7 @@
                         Search
                     </button>
 
-                    <button on:click={() => quizFormState = 'ADD'} class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200">
+                    <button on:click={() => myQuizzesState = 'ADD'} class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200">
                         Create Quiz
                     </button>
                 </div>
@@ -66,7 +73,7 @@
         -->
 
             <div class="overflow-hidden shadow-lg rounded-lg h-90 w-60 md:w-80 cursor-pointer m-auto">
-                <a href="{`/myQuizzes/${quiz.id}`}" class="w-full block h-full">
+                <a on:click={handleMyQuiz(quiz)} class="cursor-pointer w-full block h-full">
                     <img alt="quiz photo" src="{quiz.photoURL}" class="max-h-40 w-full object-cover"/>
                     <div class="bg-white dark:bg-gray-800 w-full p-4">
 
@@ -83,7 +90,7 @@
                             {quiz.description}
                         </p>
                         <div class="flex items-center mt-4">
-                            <a href="#" class="block relative">
+                            <a class="block relative">
                                 <img alt="profil" src="{$currentUserProfile.photoURL}" class="mx-auto object-cover rounded-full h-10 w-10 "/>
                             </a>
                             <div class="flex flex-col justify-between ml-4 text-sm">
@@ -91,7 +98,7 @@
                                     {$currentUserProfile.fullName}
                                 </p>
                                 <p class="text-gray-400 dark:text-gray-300">
-                                    {quiz.createdAt}
+                                    {humanizedFBDateTime(quiz.createdAt)}
                                 </p>
                             </div>
                         </div>

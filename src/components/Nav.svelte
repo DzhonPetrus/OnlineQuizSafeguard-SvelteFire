@@ -3,7 +3,6 @@
 
     import { url, isActive } from "@sveltech/routify";
     import { currentUser, currentUserProfile } from '../util/store.js';
-    import { checkEmptyArray } from '../util/helper.js';
 
     export let auth;
     export let user;

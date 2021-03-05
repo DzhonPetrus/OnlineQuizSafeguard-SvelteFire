@@ -1,10 +1,9 @@
 <script>
-    import { selectedQuestionnaireId, selectedQuizId, currentUser } from '../util/store.js';
+    import { selectedQuestionnaireId } from '../util/store.js';
     import { notifier } from '@beyonk/svelte-notifications';
 
     import firebase from 'firebase/app';
     const db = firebase.firestore();
-
 
     const qHeaders = ['Index', 'Question', 'Correct Answer', 'Incorrect Answers'];
     let questions = [];
@@ -20,14 +19,14 @@
 
     const handleQuestionClick = (op, i) => {
             questionFormState = op;
-            if(op === 'add')
+            if(op === 'ADD')
                 resetForm()
 
             if(op === 'DELETE'){
                 if(confirm(`Are you sure you want to delete question with index = ${i}?`)){
                     questions = questions.filter((q, qI) => qI !== i);
                     updateQuestionsInFB();
-                    notifier.succes(`Question with index ${i} has been deleted successfully`);
+                    notifier.success(`Question with index ${i} has been deleted successfully`);
                 }
              }
 
@@ -35,22 +34,21 @@
                 selectedQuestion = i[0];
                 selectedIndex = i[1];
 
-                    question = selectedQuestion.question;
-                    incorrectAnswers = [selectedQuestion.correctAnswer, selectedQuestion.incorrectAnswers];
-                    correctIndex = 0;
-            }
-
+                question = selectedQuestion.question;
+                incorrectAnswers = [selectedQuestion.correctAnswer, ...selectedQuestion.incorrectAnswers];
+                correctIndex = 0;
+        }
     };
 
     const handleCTA = (i=0) => {
             if(questionFormState === 'ADD'){
                 questions = [formValues, ...questions];
                 updateQuestionsInFB();
-                    notifier.success('Question has been added successfully');
+                notifier.success('Question has been added successfully');
             }
 
             if(questionFormState === 'EDIT'){
-                if(confirm(`Are you sure you want to delete question with index = ${i}?`)){
+                if(confirm(`Are you sure you want to delete question with index = ${selectedIndex}?`)){
                 questions = questions.filter((q, qI) => qI !== selectedIndex);
                     questions = [formValues, ...questions];
 
@@ -61,6 +59,7 @@
 
             resetForm();
         };
+
         const updateQuestionsInFB = () => {
             db.collection('questionnaires').doc($selectedQuestionnaireId).update({questions})
                 .catch(err => console.error(err));
@@ -73,6 +72,21 @@
         };
 
         $: formValues = {question, correctAnswer, incorrectAnswers:incorrectAnswers.filter(answer => answer != correctAnswer)};
+
+    /* SET questions if EDITING EXISTING QUIZ */
+    if($selectedQuestionnaireId !== undefined){
+        const getQuestions = async () => {
+            let res = await db.collection('questionnaires')
+                .doc($selectedQuestionnaireId)
+                .get()
+                .then(doc => doc.data())
+                .catch(err => console.error(err));
+            return res;
+        }
+        let res = getQuestions();
+            res.then(data => questions = data.questions);
+    }
+
 </script>
 
 <!-- QUESTIONS DATA TABLE -->

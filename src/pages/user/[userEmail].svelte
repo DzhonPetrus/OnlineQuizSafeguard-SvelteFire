@@ -1,11 +1,8 @@
 <script>
-  import dayjs from 'dayjs';
-  import relativeTime from 'dayjs/plugin/relativeTime';
-  dayjs.extend(relativeTime);
   import { Stretch } from "svelte-loading-spinners";
 
   import { Doc, Collection } from "sveltefire";
-  import { checkEmptyArray } from '../../util/helper.js';
+  import { humanizedDateTime, checkEmptyArray } from '../../util/helper.js';
   import { currentUserProfile, currentUser } from '../../util/store.js';
 
   /* TODO userProfile Update */
@@ -29,7 +26,7 @@
 
       <h1 class="text-2xl font-semibold">{userProfile.fullName}</h1>
 
-      <h4 class="text-sm font-semibold">Joined Since {dayjs().to(userProfile.createdAt)}</h4>
+      <h4 class="text-sm font-semibold">Joined Since {humanizedDateTime(userProfile.createdAt)}</h4>
 
     </div>
 
