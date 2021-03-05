@@ -1,27 +1,29 @@
 <script>
+
     import firebase from "firebase/app";
     const db = firebase.firestore();
     const { serverTimestamp } = firebase.firestore.FieldValue;
   import { Doc, Collection } from "sveltefire";
-  import { currentUser } from '../../util/store.js';
+  import { currentUser, currentUserProfile } from '../../../util/store.js';
 
   import { Stretch } from "svelte-loading-spinners";
 
 
     /* TODO FILTERING */
-   let quizzesQuery = ref => ref.orderBy('createdAt', 'desc').limit(10);
-</script>
+    export let quizEmail;
+   let quizzesQuery = ref => ref.where('email','==',quizEmail).orderBy('createdAt', 'desc').limit(10);
 
+</script>
 
 
 <div class="w-full bg-white p-12 mt-16 shadow-2xl rounded my-24 ">
     <div class="header flex items-end justify-between mb-12">
         <div class="title">
             <p class="text-4xl font-bold text-gray-800 mb-4">
-                Latest quizzes
+                My Quizzes
             </p>
             <p class="text-2xl font-light text-gray-400">
-                All available quizzes
+                All Created quizzes
             </p>
         </div>
         <div class="text-end">
@@ -32,6 +34,10 @@
                     </div>
                     <button class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200">
                         Search
+                    </button>
+
+                    <button class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200">
+                        Create Quiz
                     </button>
                 </form>
             </div>
@@ -51,9 +57,8 @@
         </Collection>
         -->
 
-        <Doc path={`userProfiles/${quiz.email}`} let:data={userProfile} >
             <div class="overflow-hidden shadow-lg rounded-lg h-90 w-60 md:w-80 cursor-pointer m-auto">
-                <a href="{`/quizzes/${quiz.id}`}" class="w-full block h-full">
+                <a href="{`/myQuizzes/${quiz.id}`}" class="w-full block h-full">
                     <img alt="quiz photo" src="{quiz.photoURL}" class="max-h-40 w-full object-cover"/>
                     <div class="bg-white dark:bg-gray-800 w-full p-4">
 
@@ -71,11 +76,11 @@
                         </p>
                         <div class="flex items-center mt-4">
                             <a href="#" class="block relative">
-                                <img alt="profil" src="{userProfile.photoURL}" class="mx-auto object-cover rounded-full h-10 w-10 "/>
+                                <img alt="profil" src="{$currentUserProfile.photoURL}" class="mx-auto object-cover rounded-full h-10 w-10 "/>
                             </a>
                             <div class="flex flex-col justify-between ml-4 text-sm">
                                 <p class="text-gray-800 dark:text-white">
-                                    {userProfile.fullName}
+                                    {$currentUserProfile.fullName}
                                 </p>
                                 <p class="text-gray-400 dark:text-gray-300">
                                     {quiz.createdAt}
@@ -85,7 +90,6 @@
                     </div>
                 </a>
             </div>
-        </Doc>
     {/each}
 
         </div>

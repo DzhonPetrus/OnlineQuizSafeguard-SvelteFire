@@ -1,17 +1,20 @@
 <script>
   import dayjs from 'dayjs';
-  import duration from 'dayjs/plugin/duration';
   import relativeTime from 'dayjs/plugin/relativeTime';
-  dayjs.extend(duration);
   dayjs.extend(relativeTime);
+  import { Stretch } from "svelte-loading-spinners";
 
+  import { Doc, Collection } from "sveltefire";
   import { checkEmptyArray } from '../../util/helper.js';
   import { currentUserProfile, currentUser } from '../../util/store.js';
-  $:userProfile = $currentUserProfile;
 
   /* TODO userProfile Update */
+  export let userEmail;
   let userProfileState = "READ";
 </script>
+
+
+<Doc path={`/userProfiles/${userEmail}`} let:data={userProfile}>
 
 
 <div class="w-full relative mt-16 shadow-2xl rounded my-24 ">
@@ -22,11 +25,11 @@
 
     <div class="flex flex-col justify-center items-center relative h-full bg-black bg-opacity-50 text-white">
 
-      <img src="{checkEmptyArray(userProfile, userProfile.photoURL)}" class="h-24 w-24 object-cover rounded-full">
+      <img src="{userProfile.photoURL}" class="h-24 w-24 object-cover rounded-full">
 
-      <h1 class="text-2xl font-semibold">{checkEmptyArray(userProfile, userProfile.fullName)}</h1>
+      <h1 class="text-2xl font-semibold">{userProfile.fullName}</h1>
 
-      <h4 class="text-sm font-semibold">Joined Since {checkEmptyArray($currentUser, dayjs().to($currentUser.metadata.creationTime))}</h4>
+      <h4 class="text-sm font-semibold">Joined Since {dayjs().to(userProfile.createdAt)}</h4>
 
     </div>
 
@@ -64,7 +67,7 @@
 
           <div class="form-item">
             <label class="text-xl ">Full Name</label>
-            <input type="text" value="{checkEmptyArray(userProfile, userProfile.fullName)}" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2  mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200" disabled>
+            <input type="text" value="{userProfile.fullName}" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2  mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200" disabled>
           </div>
 
 
@@ -74,21 +77,21 @@
 
             <div class="form-item w-full">
               <label class="text-xl ">Email</label>
-              <input type="email" value="{checkEmptyArray(userProfile, userProfile.email)}" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2 mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200 text-opacity-25 " disabled>
+              <input type="email" value="{userProfile.email}" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2 mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200 text-opacity-25 " disabled>
             </div>
           </div>
 
 
           <div class="form-item w-full">
               <label class="text-xl ">Website</label>
-              <input type="text" value="{checkEmptyArray(userProfile, userProfile.website)}" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2 mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200 text-opacity-25 " disabled>
+              <input type="text" value="{userProfile.website}" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2 mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200 text-opacity-25 " disabled>
             </div>
             <div>
 
 
           <div class="form-item w-full">
               <label class="text-xl ">Location</label>
-              <input type="text" value="{checkEmptyArray(userProfile, userProfile.location)}" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2 mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200 text-opacity-25 " disabled>
+              <input type="text" value="{userProfile.location}" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2 mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200 text-opacity-25 " disabled>
             </div>
 
             <div>
@@ -104,7 +107,7 @@
 
             <label class="text-xl ">Bio</label>
 
-            <textarea cols="30" rows="10" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2 mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200 text-opacity-25 " disabled>{checkEmptyArray(userProfile, userProfile.bio)}</textarea>
+            <textarea cols="30" rows="10" class="w-full appearance-none text-black text-opacity-50 rounded shadow py-1 px-2 mr-2 focus:outline-none focus:shadow-outline focus:border-blue-200 text-opacity-25 " disabled>{userProfile.bio}</textarea>
 
           </div>
 
@@ -157,3 +160,16 @@
   </div>
 
 </div>
+
+  <span slot="loading">
+    <div class="flex items-center justify-center w-full mt-8">
+        <Stretch size="60" color="#FF3E00" unit="px" duration="1s" />
+      </div>
+    </span>
+
+    <span slot="fallback">
+      USER DOES NOT EXIST
+    </span>
+
+
+</Doc>
