@@ -8,3 +8,6 @@ export let currentUserProfile = writable([]);
 
 export let selectedQuizId = writable();
 export let selectedQuestionnaireId = writable();
+
+
+export let quizAttempt = writable([]);

@@ -67,8 +67,12 @@
                         <p class="text-gray-800 dark:text-white text-xl font-medium mb-2">
                             {quiz.title}
                         </p>
-                        <p class="text-gray-400 dark:text-gray-300 font-light text-md">
+                        <p class="text-gray-400 dark:text-gray-300 font-light text-md mb-4">
                             {quiz.description}
+                        </p>
+
+                        <p class="text-right text-gray-400 dark:text-gray-300 font-light">
+                            <span>Items: {quiz.noOfItems} | Duration: {quiz.duration} min</span>
                         </p>
                         <div class="flex items-center mt-4">
                             <a href="#" class="block relative">

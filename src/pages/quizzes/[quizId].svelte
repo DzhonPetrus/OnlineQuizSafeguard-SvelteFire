@@ -20,11 +20,12 @@
 
     let quizState = 'READ';
     let selectedQuiz = [];
+    let userProfile = [];
 </script>
 
 {#if quizState === 'READ'}
 <Doc path={`quizzes/${quizId}`} let:data={quiz} >
-<Doc path={`userProfiles/${quiz.email}`} let:data={userProfile} >
+  <Doc path={`userProfiles/${quiz.email}`} let:data={userProfile} on:data={e => userProfile = e.detail.data}>
 <div class='flex max-w-xl my-10 bg-white shadow-md rounded-lg overflow-hidden mx-auto'>
 
         <div class='flex items-center w-full'>
@@ -62,7 +63,9 @@
 
                 <div class='text-gray-600 font-semibold text-lg mb-2 mx-3 px-2'>{quiz.title}</div>
 
-                <div class='text-gray-500 font-thin text-sm mb-6 mx-3 px-2'>{quiz.description}</div>
+                <div class='text-gray-500 font-thin text-sm mb-2 mx-3 px-2'>{quiz.description}</div>
+                <div class='text-gray-500 font-thin text-sm mb-2 mx-3 px-2'>No of Items: {quiz.noOfItems}</div>
+                <div class='text-gray-500 font-thin text-sm mb-6 mx-3 px-2'>Duration: {quiz.duration} min</div>
 
 
 
@@ -71,7 +74,7 @@
                   <span class='w-10 h-10 object-cover '></span>
 
                     <span class="absolute inset-y-0 right-0 flex items-center pr-6">
-                      <button on:click={() => takeQuiz(quiz)} class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200" >
+                      <button on:click={() => takeQuiz({...quiz, quizId})} class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200" >
                           Take Quiz
                       </button>
                     </span>
@@ -82,7 +85,7 @@
 
         </div>
 
-    </div>i
+    </div>
 
 
   <span slot="loading">
@@ -99,9 +102,9 @@
 </Doc>
 
 {:else if quizState === 'ATTEMPT'}
-  <QUIZ_TAKE {selectedQuiz} />
+  <QUIZ_TAKE {selectedQuiz} bind:quizState/>
 
 {:else}
-  <QUIZ_RESULT />
+  <QUIZ_RESULT {selectedQuiz} {userProfile}/>
 
 {/if}
