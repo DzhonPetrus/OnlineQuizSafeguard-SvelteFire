@@ -6,7 +6,6 @@
     export let selectedQuiz;
 
 
-    console.log($quizAttempt);
 </script>
 
 <div class="w-full bg-white p-12 mt-16 shadow-2xl rounded my-24 ">

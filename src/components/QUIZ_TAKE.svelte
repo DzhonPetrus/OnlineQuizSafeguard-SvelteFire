@@ -26,7 +26,6 @@
         correctAnswers = questionnaire.questions.map(v => v.correctAnswer);
       };
 
-  console.log(selectedQuiz)
     /* $:console.log(answers) */
     // $:console.log(activityLog)
 

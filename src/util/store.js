@@ -11,3 +11,4 @@ export let selectedQuestionnaireId = writable();
 
 
 export let quizAttempt = writable([]);
+export let faceDetected = writable(0);

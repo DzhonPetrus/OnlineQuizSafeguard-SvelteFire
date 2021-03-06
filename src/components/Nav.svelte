@@ -13,13 +13,20 @@
     let hideMenuDropdown = true;
     let hideUserDropdown = true;
 
+    /* let links = [ */
+    /*         ["./index", 'Home'], */
+    /*         ["./quizzes", 'Quizzes'], */
+    /*     ]; */
+    /* let linksUser = [ */
+    /*         [`./user`, 'Account'], */
+    /*         ["./settings", 'Settings'], */
+    /*         [`./user/quizzes/${user.email}`, 'My Quizzes'], */
+    /*     ]; */
     let links = [
-            ["./index", 'Home'],
             ["./quizzes", 'Quizzes'],
         ];
     let linksUser = [
             [`./user`, 'Account'],
-            ["./settings", 'Settings'],
             [`./user/quizzes/${user.email}`, 'My Quizzes'],
         ];
 </script>

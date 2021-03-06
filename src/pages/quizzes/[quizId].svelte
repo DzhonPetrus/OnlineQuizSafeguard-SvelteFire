@@ -1,5 +1,7 @@
 <script>
+  import FaceDetection from '../../components/FaceDetection.svelte';
   import {humanizedFBDateTime} from '../../util/helper.js';
+  import { faceDetected } from '../../util/store.js';
 
   import { params } from '@sveltech/routify';
   export let quizId;
@@ -102,7 +104,11 @@
 </Doc>
 
 {:else if quizState === 'ATTEMPT'}
-  <QUIZ_TAKE {selectedQuiz} bind:quizState/>
+  {#if $faceDetected === 0}
+    <FaceDetection />
+  {:else}
+    <QUIZ_TAKE {selectedQuiz} bind:quizState/>
+  {/if}
 
 {:else}
   <QUIZ_RESULT {selectedQuiz} {userProfile}/>
