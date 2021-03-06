@@ -25,7 +25,7 @@
                 All available quizzes
             </p>
         </div>
-        <div class="text-end">
+      <!--  <div class="text-end">
             <form class="flex w-full max-w-sm space-x-3">
                 <div class=" relative ">
 
@@ -35,7 +35,7 @@
                         Search
                     </button>
                 </form>
-            </div>
+          </div> -->
         </div>
 
 
@@ -75,7 +75,7 @@
                             <span>Items: {quiz.noOfItems} | Duration: {quiz.duration} min</span>
                         </p>
                         <div class="flex items-center mt-4">
-                            <a href="#" class="block relative">
+                            <a href="/user/{quiz.email}" class="block relative">
                                 <img alt="profil" src="{userProfile.photoURL}" class="mx-auto object-cover rounded-full h-10 w-10 "/>
                             </a>
                             <div class="flex flex-col justify-between ml-4 text-sm">

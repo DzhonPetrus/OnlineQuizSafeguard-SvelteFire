@@ -40,13 +40,13 @@
     }
 
     function signUp(credential){
-            let {email, password} = credential.detail;
+            let {email, password, fullName} = credential.detail;
 
             /* USER SIGN UP */
             auth.createUserWithEmailAndPassword(email, password)
                 .then((credentials) => {
                         let { email, uid, metadata } = credentials.user;
-                    const newUserProfile = {email, photoURL: 'https://iupac.org/wp-content/uploads/2018/05/default-avatar.png', fullName:'', createdAt:metadata.creationTime, uid, bio:'', website:'', location:''};
+                    const newUserProfile = {email, photoURL: 'https://iupac.org/wp-content/uploads/2018/05/default-avatar.png', fullName, createdAt:metadata.creationTime, uid, bio:'', website:'', location:''};
                     notifier.success('Account created successfully')
 
                     /* GENERATING USER PROFILE */
@@ -131,4 +131,3 @@
 {/if}
 
 
-<pre>{JSON.stringify(values, undefined, 1)}</pre>

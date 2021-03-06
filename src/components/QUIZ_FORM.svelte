@@ -128,4 +128,6 @@
         </div>
 </div><br> <br>
 
-<QUESTION_FORM />
+{#if quizFormState !== 'ADD'}
+    <QUESTION_FORM />
+{/if}

@@ -1,9 +1,9 @@
 <script>
   import FaceDetection from '../../components/FaceDetection.svelte';
   import {humanizedFBDateTime} from '../../util/helper.js';
-  import { faceDetected } from '../../util/store.js';
+  import { faceDetected, currentUserProfile } from '../../util/store.js';
 
-  import { params } from '@sveltech/routify';
+  import { goto } from '@sveltech/routify';
   export let quizId;
 
   import { Doc } from "sveltefire";
@@ -23,11 +23,16 @@
     let quizState = 'READ';
     let selectedQuiz = [];
     let userProfile = [];
+
+    const handleUserProfile = (data) => {
+        if(data === $currentUserProfile.email)
+          $goto(`/user/quizzes/${$currentUserProfile.email}`);
+      };
 </script>
 
 {#if quizState === 'READ'}
 <Doc path={`quizzes/${quizId}`} let:data={quiz} >
-  <Doc path={`userProfiles/${quiz.email}`} let:data={userProfile} on:data={e => userProfile = e.detail.data}>
+  <Doc path={`userProfiles/${quiz.email}`} let:data={userProfile} on:data={e =>  e.detail.data}>
 <div class='flex max-w-xl my-10 bg-white shadow-md rounded-lg overflow-hidden mx-auto'>
 
         <div class='flex items-center w-full'>
