@@ -19,7 +19,7 @@
             /* password 6 characters minimum */
 
             auth.signInWithEmailAndPassword(email, password)
-                .then(() => notifier.success('User Signed In successfully'))
+                .then(() => notifier.success('User Signed In successfully') )
                 .catch(error => console.log(error.code, error.message));
     }
 

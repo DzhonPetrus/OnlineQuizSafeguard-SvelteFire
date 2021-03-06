@@ -25,14 +25,14 @@
     let userProfile = [];
 
     const handleUserProfile = (data) => {
-        if(data === $currentUserProfile.email)
+        if(data.email === $currentUserProfile.email)
           $goto(`/user/quizzes/${$currentUserProfile.email}`);
       };
 </script>
 
 {#if quizState === 'READ'}
 <Doc path={`quizzes/${quizId}`} let:data={quiz} >
-  <Doc path={`userProfiles/${quiz.email}`} let:data={userProfile} on:data={e =>  e.detail.data}>
+  <Doc path={`userProfiles/${quiz.email}`} let:data={userProfile} on:data={e => handleUserProfile(e.detail.data)}>
 <div class='flex max-w-xl my-10 bg-white shadow-md rounded-lg overflow-hidden mx-auto'>
 
         <div class='flex items-center w-full'>
@@ -41,7 +41,7 @@
 
                 <div class="flex flex-row mt-2 px-2 py-3 mx-3">
 
-                    <div class="w-auto h-auto rounded-full border-2 border-purple-500">
+                  <div on:click={() => $goto(`/user/${userProfile.email}`)} class="w-auto h-auto rounded-full border-2 border-purple-500">
 
                       <img class='w-12 h-12 object-cover rounded-full shadow cursor-pointer' alt='User avatar' src="{userProfile.photoURL}">
 
