@@ -11,13 +11,6 @@
 
   let firebaseConfig = {
   // Insert Firebase Credentials here
-  apiKey: "AIzaSyBfZsaPhvytstCy1RLR5qDvSJqgzVWIqMk",
-  authDomain: "online-quiz-safeguard.firebaseapp.com",
-  projectId: "online-quiz-safeguard",
-  storageBucket: "online-quiz-safeguard.appspot.com",
-  messagingSenderId: "9646730740",
-  appId: "1:9646730740:web:f09c386a11321847481da1",
-  measurementId: "G-5TW7SDMNDW"
   };
 
   firebase.initializeApp(firebaseConfig);
