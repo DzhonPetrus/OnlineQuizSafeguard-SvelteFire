@@ -6,4 +6,4 @@ A Simple Quiz App with Activity Log and Face Detection.
 - [Firebase](https://firebase.google.com) 
 - [Tailwind CSS](https://https://tailwindcss.com/) 
 
-* Initial Template Used [SvelteFire](https://github.com/codediodeio/sveltefire) template. *
+*Initial Template Used [SvelteFire](https://github.com/codediodeio/sveltefire) template.*
