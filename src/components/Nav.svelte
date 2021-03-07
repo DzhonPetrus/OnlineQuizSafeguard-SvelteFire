@@ -28,7 +28,9 @@
     let linksUser = [
             [`./user`, 'Account'],
             [`./user/quizzes/${user.email}`, 'My Quizzes'],
+            [`./attempts`, 'My Attempts'],
         ];
+
 </script>
 <Doc path={`userProfiles/${user.email}`} let:data={userProfile} on:data={e => currentUserProfile.set(e.detail.data)} >
 

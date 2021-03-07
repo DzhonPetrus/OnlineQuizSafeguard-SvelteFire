@@ -1,5 +1,5 @@
 <script>
-    import { selectedQuestionnaireId } from '../util/store.js';
+    import { selectedQuestionnaireId, selectedNoOfItems } from '../util/store.js';
     import { notifier } from '@beyonk/svelte-notifications';
 
     import firebase from 'firebase/app';
@@ -42,9 +42,13 @@
 
     const handleCTA = (i=0) => {
             if(questionFormState === 'ADD'){
-                questions = [formValues, ...questions];
-                updateQuestionsInFB();
-                notifier.success('Question has been added successfully');
+                if($selectedNoOfItems >= questions.length){
+                    notifier.danger('Questions cannot exceed the No of Items.');
+                } else {
+                    questions = [formValues, ...questions];
+                    updateQuestionsInFB();
+                    notifier.success('Question has been added successfully');
+                }
             }
 
             if(questionFormState === 'EDIT'){
@@ -63,7 +67,7 @@
         const updateQuestionsInFB = () => {
             db.collection('questionnaires').doc($selectedQuestionnaireId).update({questions})
                 .catch(err => console.error(err));
-            };
+        };
 
         const resetForm = () => {
             question='';
@@ -87,6 +91,7 @@
             res.then(data => questions = data.questions);
     }
 
+
 </script>
 
 <!-- QUESTIONS DATA TABLE -->
@@ -101,7 +106,7 @@
             <h1 class="text-3xl font-semibold text-gray-800 dark:text-white"></h1>
             <div class="text-end">
                 <div class="flex w-full max-w-sm space-x-3">
-                  <button onclick="document.getElementById('myModal').showModal()" on:click={() => handleQuestionClick('ADD')} class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200" >
+                    <button disabled={questions.length >= $selectedNoOfItems} onclick="document.getElementById('myModal').showModal()" on:click={() => handleQuestionClick('ADD')} class="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200 disabled:focus:bg-purple-600 disabled:opacity-50" >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="15" height="15" >
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
                             </svg>

@@ -37,7 +37,6 @@
       let score = userCorrectAnswers.length;
       attempt = {quizId: selectedQuiz.quizId, email: $currentUser.email, score, answers, quizLog:activityLog, createdAt:serverTimestamp()};
 
-        console.log(attempt);
       if(confirm('Are you sure you want to submit your quiz?')){
 
         db.collection('attempts').add(attempt)

@@ -2,13 +2,12 @@
   import SignIn from '../components/SignIn.svelte';
   import Nav from '../components/Nav.svelte';
 
-  import { FirebaseApp, User, Doc, Collection } from "sveltefire";
+  import { FirebaseApp, User } from "sveltefire";
 
   import firebase from "firebase/app";
   import "firebase/firestore";
   import "firebase/auth";
-  import "firebase/performance";
-  import "firebase/analytics";
+  import "firebase/storage";
 
   let firebaseConfig = {
   // Insert Firebase Credentials here

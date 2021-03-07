@@ -1,10 +1,8 @@
 <script>
     import { humanizedFBDateTime } from '../../../util/helper.js';
 
-    import firebase from "firebase/app";
-    const db = firebase.firestore();
   import { Doc, Collection } from "sveltefire";
-  import { currentUser, currentUserProfile } from '../../../util/store.js';
+  import { currentUser, currentUserProfile, selectedNoOfItems } from '../../../util/store.js';
   import QUIZ_FORM from '../../../components/QUIZ_FORM.svelte';
 
   import { Stretch } from "svelte-loading-spinners";
@@ -18,6 +16,7 @@
     let selectedQuiz;
 
       const handleMyQuiz = (quiz) => {
+              selectedNoOfItems.set(quiz.noOfItems);
               selectedQuiz = quiz;
               myQuizzesState = 'EDIT';
           };
@@ -76,7 +75,7 @@
         -->
 
             <div class="overflow-hidden shadow-lg rounded-lg h-90 w-60 md:w-80 cursor-pointer m-auto">
-                <a on:click={handleMyQuiz(quiz)} class="cursor-pointer w-full block h-full">
+                <a on:click={() => handleMyQuiz(quiz)} class="cursor-pointer w-full block h-full">
                     <img alt="quiz photo" src="{quiz.photoURL}" class="max-h-40 w-full object-cover"/>
                     <div class="bg-white dark:bg-gray-800 w-full p-4">
 
@@ -120,7 +119,7 @@
     </span>
 
     <span slot="fallback">
-      NO QUIZZES AVAILABLE
+      NO QUIZZES CREATED
     </span>
 
 
